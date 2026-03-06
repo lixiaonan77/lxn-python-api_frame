@@ -44,8 +44,7 @@ jobs:
 
       - name: Combine multiple Allure results (if any)
         run: |
-          mkdir -p allure-combined
-          allure-combine allure-results/ --dest allure-combined
+          allure-combine allure-results/ --dest allure-combined --auto-create-folders
 
       - name: Generate final Allure report
         run: |
