@@ -38,13 +38,17 @@ jobs:
           curl -sL https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz | tar -zx -C /opt
           echo "/opt/allure-2.24.0/bin" >> $GITHUB_PATH
 
-      - name: Run tests and generate Allure results
+      - name: Run tests with retry and generate Allure results
         run: |
-          pytest testcase/ --alluredir=allure-results -v
+          pytest testcase/ --alluredir=allure-results -v --reruns 2 --reruns-delay 2
 
-      - name: Generate Allure HTML report
+      - name: Combine multiple Allure results (if any)
         run: |
-          allure generate allure-results -o allure-report --clean
+          allure-combine allure-results/ --output allure-combined
+
+      - name: Generate final Allure report
+        run: |
+          allure generate allure-combined -o allure-report --clean
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -53,6 +57,21 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: allure-report/
+
+      - name: Send DingTalk notification
+        if: always()  # 无论成功/失败都发送通知
+        uses: leafonthesky/dingtalk-action@v1.0.0
+        with:
+          webhook: ${{ secrets.DINGTALK_WEBHOOK }}
+          msgtype: "text"
+          text: |
+            📢 API 自动化测试结果通知
+            ├─ 仓库: ${{ github.repository }}
+            ├─ 分支: ${{ github.ref_name }}
+            ├─ 状态: ${{ job.status }}
+            ├─ 执行人: ${{ github.actor }}
+            ├─ 运行详情: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            └─ Allure报告: ${{ steps.deployment.outputs.page_url }}
 
   deploy:
     environment:

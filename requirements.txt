@@ -4,3 +4,5 @@ requests==2.32.5
 openpyxl==3.1.5
 pytest-html==4.2.0
 pandas==2.3.3
+pytest-rerunfailures==16.0.1
+allure-combine==1.0.11
