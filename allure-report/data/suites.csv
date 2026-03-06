@@ -1,0 +1,15 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+测试目的：验证已登录用户能正常查询自身信息
+测试步骤：
+1. 携带有效token调用GET /user接口
+2. 验证响应状态码为200
+3. 验证响应体包含userId、username字段
+","1170","获取数据","testcase","2026-03-06","passed","2026-03-06","TestApi","test_api","",""
+"
+测试目的：验证已登录用户能正常查询自身信息
+测试步骤：
+1. 携带有效token调用GET /user接口
+2. 验证响应状态码为200
+3. 验证响应体包含userId、username字段
+","1062","提交数据","testcase","2026-03-06","passed","2026-03-06","TestApi","test_api","",""
