@@ -44,7 +44,7 @@ jobs:
 
       - name: Combine multiple Allure results (if any)
         run: |
-          allure-combine allure-results/ --output allure-combined
+          allure-combine allure-results/  allure-combined
 
       - name: Generate final Allure report
         run: |
