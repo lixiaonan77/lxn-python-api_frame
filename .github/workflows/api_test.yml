@@ -5,7 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -58,20 +58,23 @@ jobs:
         with:
           path: allure-report/
 
+      # 修复：使用稳定的钉钉通知 Action
       - name: Send DingTalk notification
-        if: always()  # 无论成功/失败都发送通知
-        uses: leafonthesky/dingtalk-action@v1.0.0
+        if: always()
+        uses: zcong1993/dingtalk-action@v2.0.0
         with:
-          webhook: ${{ secrets.DINGTALK_WEBHOOK }}
-          msgtype: "text"
-          text: |
-            📢 API 自动化测试结果通知
-            ├─ 仓库: ${{ github.repository }}
-            ├─ 分支: ${{ github.ref_name }}
-            ├─ 状态: ${{ job.status }}
-            ├─ 执行人: ${{ github.actor }}
-            ├─ 运行详情: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            └─ Allure报告: ${{ steps.deployment.outputs.page_url }}
+          # 填你在 GitHub Secrets 里配置的钉钉 Webhook 密钥名
+          dingToken: ${{ secrets.DINGTALK_WEBHOOK }}
+          # 通知内容（支持 markdown）
+          msgType: markdown
+          content: |
+            ## 📢 API 自动化测试结果通知
+            - 仓库：${{ github.repository }}
+            - 分支：${{ github.ref_name }}
+            - 状态：${{ job.status }}
+            - 执行人：${{ github.actor }}
+            - 运行详情：[点击查看](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - Allure报告：[点击查看](${{ steps.deployment.outputs.page_url }})
 
   deploy:
     environment:
